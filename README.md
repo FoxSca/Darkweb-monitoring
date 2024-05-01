@@ -1,58 +1,68 @@
-Description:
+Step-by-Step Description:
+1. Description of Script:
 
-The Onion Site Monitor script with CAPTCHA bypass is a Python tool designed to monitor a list of Onion sites (websites accessible via the Tor network) for the presence of a query string or a dork. It periodically checks these sites and sends notifications via Telegram when the specified search term is found. Additionally, it bypasses CAPTCHA challenges encountered on these sites using the 2Captcha service.
-Step-by-Step Guide:
-Step 1: Overview
+    This script enables users to search the surface internet for a specified query string or dork using Google and Bing search engines.
+    It integrates web scraping capabilities to retrieve search results and provides options for handling CAPTCHA challenges.
+    Search results are logged, and notifications are sent to a Telegram chat.
 
-The script operates by periodically checking a list of Onion sites for the presence of a specified search term. This search term can be either a specific query string or a dork, which is a combination of keywords used to perform more complex searches.
-Step 2: Dependencies
-
-Before using the script, ensure that you have the following dependencies installed:
+2. Dependencies:
 
     Python 3.x
-    Selenium
     requests
+    selenium
+    BeautifulSoup
 
-These dependencies can be installed using pip:
+3. Example Usage:
+3.1. Running the Script:
 
-pip install selenium requests
+    Execute the script in a Python environment.
 
-Step 3: Configuration
+bash
 
-    Telegram Bot Setup: Obtain a Telegram bot token and chat ID to enable notification functionality. You can create a new bot and obtain its token using the BotFather bot on Telegram.
+python surface_internet_search.py
 
-    2Captcha API Key: Sign up for a 2Captcha account and obtain an API key. This key will be used to solve CAPTCHA challenges programmatically.
+3.2. Entering Search Query:
 
-Step 4: Prepare URLs File
+    You will be prompted to enter the query string or dork to search for.
 
-Prepare a text file containing the list of Onion site URLs that you want to monitor. Each URL should be on a separate line.
-Step 5: Running the Script
+bash
 
-    Run the script.
-    Enter the search term when prompted. This can be either a specific query string or a dork.
-    Provide the path to the file containing the list of URLs when prompted.
-    The script will start monitoring the specified Onion sites.
-    If the search term is found on any site, a notification will be sent via Telegram.
-    CAPTCHA challenges encountered on the sites will be automatically bypassed using the 2Captcha service.
+Enter the query string or dork to search for: vulnerability disclosure
 
-Step 6: Monitoring and Notification
+3.3. Choosing Search Source:
 
-The script will continuously monitor the specified Onion sites, checking for the presence of the search term. If the search term is found, a notification will be sent via Telegram. The script will repeat this process every 15 minutes by default.
-Step 7: Handling CAPTCHA Challenges
+    Select the search source (Google, Bing, or Both) when prompted.
 
-When encountering CAPTCHA challenges on the Onion sites, the script automatically interacts with the 2Captcha service to solve them. This ensures seamless monitoring without manual intervention.
-Step 8: Results Logging
+bash
 
-The script logs the results of each monitoring session to a CSV file named results.csv. This file contains information about the URLs checked and whether the search term was found or not.
-Step 9: Customization
+Enter the search source (Google, Bing, or Both): Both
 
-Feel free to customize the script according to your specific requirements. You can adjust the monitoring frequency, notification settings, and error handling as needed.
-Step 10: Security Considerations
+3.4. Providing URL File Path:
 
-Ensure that Tor is properly configured and running on your system for the Selenium script to work with Onion sites. Additionally, use the script responsibly and adhere to the terms of service of the websites being monitored.
+    Enter the path to the urls.txt file containing Onion site URLs.
+
+bash
+
+Enter the path to the urls.txt file: /path/to/urls.txt
+
+4. Monitoring Output:
+
+    Monitor the script output for search results and notifications.
+    Example output:
+
+plaintext
+
+Search term 'vulnerability disclosure' found in https://example.com (Source: Google).
+Message sent to Telegram chat YOUR_CHAT_ID
+
 Example:
 
-    Search Term: onion
-    URLs File Path: urls.txt
+Let's say you want to search for the query "cybersecurity news" using both Google and Bing search engines, and you have a file named urls.txt containing Onion site URLs. Here's how you would use the script:
 
-In this example, the script will monitor the specified Onion sites for the presence of the term "onion" and send notifications via Telegram when it's found.
+bash
+
+Enter the query string or dork to search for: cybersecurity news
+Enter the search source (Google, Bing, or Both): Both
+Enter the path to the urls.txt file: /path/to/urls.txt
+
+Then, you would monitor the script output to see the search results and notifications as they occur.
