@@ -1,24 +1,29 @@
 """
-Onion Site Monitor Script
+Onion Site Monitor Script with CAPTCHA Bypass
 
-This script periodically checks a list of Onion sites for a specific query string
-and sends notifications via Telegram if the query is found. It utilizes Selenium
-with Tor proxy for accessing Onion sites.
+Description:
+    This Python script monitors a list of Onion sites for a specific query string periodically. It is designed to bypass CAPTCHA challenges encountered on these sites using the 2Captcha service. If the query string is found on any of the sites, the script sends a notification via Telegram. The script utilizes Selenium with Tor proxy for accessing Onion sites.
 
 Dependencies:
-- Python 3.x
-- Selenium
-- requests
+    - Python 3.x
+    - Selenium
+    - requests
 
 Instructions:
-1. Install the required dependencies via pip:
-2. Configure a Telegram bot and obtain the bot token and chat ID.
-3. Provide the path to a text file containing the list of Onion site URLs.
-4. Run the script. It will check the sites periodically and send notifications
-when the specified query string is found.
+    1. Install the required dependencies via pip:
+       ```
+       pip install selenium requests
+       ```
+    2. Obtain a Telegram bot token and chat ID to enable notification functionality.
+    3. Obtain a 2Captcha API key for bypassing CAPTCHA challenges.
+    4. Prepare a text file containing the list of Onion site URLs to monitor.
+    5. Run the script and follow the prompts to input the query string and the path to the URLs file.
+    6. The script will periodically (every 15 minutes) check the specified Onion sites for the query string.
+    7. If the query string is found on any site, a notification will be sent via Telegram.
+    8. CAPTCHA challenges encountered on the sites will be automatically bypassed using the 2Captcha service.
 
-Note: Ensure that Tor is properly configured and running on the system for the
-Selenium script to work with Onion sites.
+Note: Ensure that Tor is properly configured and running on the system for the Selenium script to work with Onion sites.
+
 """
 
 import csv
