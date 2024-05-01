@@ -40,6 +40,18 @@ chat_id = 'YOUR_CHAT_ID'
 api_key_2captcha = 'YOUR_2CAPTCHA_API_KEY'
 
 def solve_captcha_2captcha(api_key, site_key, url):
+    """
+    Solves CAPTCHA challenges using 2Captcha service.
+
+    Args:
+        api_key (str): Your 2Captcha API key.
+        site_key (str): The site key extracted from the CAPTCHA challenge.
+        url (str): The URL of the page with the CAPTCHA.
+
+    Returns:
+        str: The solution to the CAPTCHA challenge.
+        None: If unable to solve the CAPTCHA challenge.
+    """
     captcha_url = f"https://2captcha.com/in.php?key={api_key}&method=userrecaptcha&googlekey={site_key}&pageurl={url}&json=1"
     response = requests.get(captcha_url)
     if response.status_code == 200:
@@ -54,7 +66,19 @@ def solve_captcha_2captcha(api_key, site_key, url):
     else:
         return None
 
-def check_onion_site(url, query, failures, last_notification_sent):
+def check_onion_site(url, search_term, failures, last_notification_sent):
+    """
+    Checks an Onion site for the presence of a query string or dork and handles CAPTCHA challenges if encountered.
+
+    Args:
+        url (str): The URL of the Onion site to check.
+        search_term (str): The query string or dork to search for on the site.
+        failures (dict): A dictionary tracking the number of consecutive failures for each site.
+        last_notification_sent (dict): A dictionary storing the timestamp of the last notification sent for each site.
+
+    Returns:
+        tuple: A tuple containing the status code, URL, and comment.
+    """
     driver = None
     
     try:
@@ -86,13 +110,13 @@ def check_onion_site(url, query, failures, last_notification_sent):
             else:
                 raise Exception("Failed to solve CAPTCHA")
         
-        query_found = query in driver.page_source
-        if query_found:
-            print(f"Query found in {url}")
-            return 0, url, "Query Found"  # Query found
+        # Search for the search term (query string or dork)
+        if search_term in driver.page_source:
+            print(f"Search term '{search_term}' found in {url}")
+            return 0, url, "Search Term Found"  # Search term found
         else:
-            print(f"Query not found in {url}")
-            return 1, None, "Query Not Found"  # Query not found
+            print(f"Search term '{search_term}' not found in {url}")
+            return 1, None, "Search Term Not Found"  # Search term not found
     except Exception as e:
         print(f"{url} is down: {e}")
         return 1, None, "Site Down"
@@ -101,7 +125,13 @@ def check_onion_site(url, query, failures, last_notification_sent):
             driver.quit()
 
 def send_notification_to_telegram(url):
-    message = f"Query string found at {url}."
+    """
+    Sends a notification to Telegram chat.
+
+    Args:
+        url (str): The URL where the search term was found.
+    """
+    message = f"Search term found at {url}."
     
     send_message_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     payload = {
@@ -116,8 +146,8 @@ def send_notification_to_telegram(url):
         print("Failed to send message to Telegram")
 
 if __name__ == "__main__":
-    # Get query string from user
-    query = input("Enter the query string to search for: ")
+    # Get search term from user
+    search_term = input("Enter the query string or dork to search for: ")
 
     # Get path to the urls.txt file from user
     urls_file_path = input("Enter the path to the urls.txt file: ")
@@ -138,7 +168,7 @@ if __name__ == "__main__":
 
     while True:
         for url in urls:
-            fail_count, found_url, comment = check_onion_site(url, query, failures, last_notification_sent)
+            fail_count, found_url, comment = check_onion_site(url, search_term, failures, last_notification_sent)
 
             # Update failure count
             if fail_count == 1:
@@ -151,7 +181,7 @@ if __name__ == "__main__":
                 send_notification_to_telegram(found_url)
                 last_notification_sent[url] = datetime.datetime.now()
 
-            # Add data to CSV if query found
+            # Add data to CSV if search term found
             if fail_count == 0:
                 csv_data.append([url, comment])
 
@@ -162,3 +192,4 @@ if __name__ == "__main__":
             csv_writer.writerows(csv_data)
 
         time.sleep(900)  # Check every 15 minutes
+
