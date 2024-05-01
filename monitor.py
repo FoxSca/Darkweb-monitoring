@@ -31,6 +31,7 @@ import time
 import datetime
 import requests
 from selenium import webdriver
+from bs4 import BeautifulSoup
 
 # Telegram bot token and chat ID
 bot_token = 'YOUR_BOT_TOKEN'
@@ -65,6 +66,52 @@ def solve_captcha_2captcha(api_key, site_key, url):
         return None
     else:
         return None
+
+def search_surface_google(search_term):
+    """
+    Searches the surface internet using Google search engine.
+
+    Args:
+        search_term (str): The query string or dork to search for.
+
+    Returns:
+        list: A list of URLs where the search term was found.
+    """
+    urls = []
+    search_url = f"https://www.google.com/search?q={search_term}"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+    response = requests.get(search_url, headers=headers)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        links = soup.find_all('a')
+        for link in links:
+            href = link.get('href')
+            if href and 'http' in href:
+                urls.append(href)
+    return urls
+
+def search_surface_bing(search_term):
+    """
+    Searches the surface internet using Bing search engine.
+
+    Args:
+        search_term (str): The query string or dork to search for.
+
+    Returns:
+        list: A list of URLs where the search term was found.
+    """
+    urls = []
+    search_url = f"https://www.bing.com/search?q={search_term}"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+    response = requests.get(search_url, headers=headers)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        links = soup.find_all('a')
+        for link in links:
+            href = link.get('href')
+            if href and 'http' in href:
+                urls.append(href)
+    return urls
 
 def check_onion_site(url, search_term, failures, last_notification_sent):
     """
@@ -124,14 +171,15 @@ def check_onion_site(url, search_term, failures, last_notification_sent):
         if driver is not None:
             driver.quit()
 
-def send_notification_to_telegram(url):
+def send_notification_to_telegram(url, source):
     """
     Sends a notification to Telegram chat.
 
     Args:
         url (str): The URL where the search term was found.
+        source (str): The source where the search term was found (surface or Onion).
     """
-    message = f"Search term found at {url}."
+    message = f"Search term found at {url} (Source: {source})."
     
     send_message_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     payload = {
@@ -149,47 +197,13 @@ if __name__ == "__main__":
     # Get search term from user
     search_term = input("Enter the query string or dork to search for: ")
 
+    # Prompt for search source (Onion, Surface, or Both)
+    search_source = input("Enter the search source (Google, Bing, or Both): ").lower()
+
     # Get path to the urls.txt file from user
     urls_file_path = input("Enter the path to the urls.txt file: ")
 
     # Read URLs from file
     try:
         with open(urls_file_path, 'r') as file:
-            urls = file.readlines()
-            urls = [url.strip() for url in urls]
-    except FileNotFoundError:
-        print("File not found. Please provide a valid file path.")
-        exit()
-
-    failures = {url: 0 for url in urls}
-    last_notification_sent = {url: datetime.datetime.now() for url in urls}
-
-    csv_data = []  # Collect data for CSV
-
-    while True:
-        for url in urls:
-            fail_count, found_url, comment = check_onion_site(url, search_term, failures, last_notification_sent)
-
-            # Update failure count
-            if fail_count == 1:
-                failures[url] += 1
-            else:
-                failures[url] = 0
-
-            # Send notification and update last notification time
-            if fail_count == 0 and (datetime.datetime.now() - last_notification_sent[url]).days >= 1:
-                send_notification_to_telegram(found_url)
-                last_notification_sent[url] = datetime.datetime.now()
-
-            # Add data to CSV if search term found
-            if fail_count == 0:
-                csv_data.append([url, comment])
-
-        # Write data to CSV
-        with open('results.csv', 'w', newline='') as csvfile:
-            csv_writer = csv.writer(csvfile)
-            csv_writer.writerow(['URL', 'Comment'])
-            csv_writer.writerows(csv_data)
-
-        time.sleep(900)  # Check every 15 minutes
-
+            urls = file
