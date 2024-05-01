@@ -1,28 +1,25 @@
 """
-Onion Site Monitor Script with CAPTCHA Bypass
+Surface Internet Search Script
 
-Description:
-    This Python script monitors a list of Onion sites for a specific query string periodically. It is designed to bypass CAPTCHA challenges encountered on these sites using the 2Captcha service. If the query string is found on any of the sites, the script sends a notification via Telegram. The script utilizes Selenium with Tor proxy for accessing Onion sites.
+This script allows users to search the surface internet for a specified query string or dork using Google and Bing search engines.
+It integrates web scraping capabilities to retrieve search results and provides options for handling CAPTCHA challenges.
+Search results are logged and notifications are sent to a Telegram chat.
 
 Dependencies:
-    - Python 3.x
-    - Selenium
-    - requests
+- Python 3.x
+- requests
+- selenium
+- BeautifulSoup
 
-Instructions:
-    1. Install the required dependencies via pip:
-       ```
-       pip install selenium requests
-       ```
-    2. Obtain a Telegram bot token and chat ID to enable notification functionality.
-    3. Obtain a 2Captcha API key for bypassing CAPTCHA challenges.
-    4. Prepare a text file containing the list of Onion site URLs to monitor.
-    5. Run the script and follow the prompts to input the query string and the path to the URLs file.
-    6. The script will periodically (every 15 minutes) check the specified Onion sites for the query string.
-    7. If the query string is found on any site, a notification will be sent via Telegram.
-    8. CAPTCHA challenges encountered on the sites will be automatically bypassed using the 2Captcha service.
+Author: [Fabio Scardino]
+Date: [2024/05/01]
 
-Note: Ensure that Tor is properly configured and running on the system for the Selenium script to work with Onion sites.
+Usage:
+1. Run the script.
+2. Enter the query string or dork to search for.
+3. Choose the search source (Google, Bing, or Both).
+4. Enter the path to the urls.txt file containing Onion site URLs.
+5. Monitor the script output for search results and notifications.
 
 """
 
